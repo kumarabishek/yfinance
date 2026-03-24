@@ -1,0 +1,15 @@
+[project]
+name = "yfinance-mcp-remote"
+version = "1.1.0"
+description = "Yahoo Finance MCP server — remote HTTP version for Claude iOS, web, and desktop"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp[cli]>=1.9.0",
+    "yfinance>=0.2.40",
+    "pandas>=2.0.0",
+    "uvicorn>=0.30.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
