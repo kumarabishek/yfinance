@@ -16,6 +16,9 @@ from datetime import datetime, timedelta
 mcp = FastMCP(
     "Yahoo Finance",
     json_response=True,
+    host="0.0.0.0",
+    port=int(os.environ.get("PORT", 8000)),
+    allowed_origins=["*"],
 )
 
 
@@ -458,16 +461,4 @@ def search_ticker(query: str) -> dict:
 # Run server
 # ──────────────────────────────────────────────
 if __name__ == "__main__":
-    import uvicorn
-    port = int(os.environ.get("PORT", 8000))
-
-    inner_app = mcp.sse_app()
-
-    async def app(scope, receive, send):
-        if scope["type"] in ("http", "websocket"):
-            headers = [(k, v) for k, v in scope.get("headers", []) if k != b"host"]
-            headers.append((b"host", b"localhost"))
-            scope = dict(scope, headers=headers, server=("localhost", port))
-        await inner_app(scope, receive, send)
-
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    mcp.run(transport="sse")
