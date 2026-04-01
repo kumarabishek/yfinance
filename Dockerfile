@@ -16,4 +16,4 @@ RUN uv sync --no-install-project
 ENV PORT=8000
 EXPOSE 8000
 
-CMD ["uv", "run", "server.py"]
+CMD [".venv/bin/python", "server.py"]
