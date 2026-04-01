@@ -463,15 +463,11 @@ if __name__ == "__main__":
 
     inner_app = mcp.sse_app()
 
-    # Wrapper to bypass FastMCP's host validation behind Railway's proxy
     async def app(scope, receive, send):
-        if scope["type"] == "http":
-            new_headers = []
-            for name, value in scope.get("headers", []):
-                if name == b"host":
-                    value = b"localhost"
-                new_headers.append((name, value))
-            scope["headers"] = new_headers
+        if scope["type"] in ("http", "websocket"):
+            headers = [(k, v) for k, v in scope.get("headers", []) if k != b"host"]
+            headers.append((b"host", b"localhost"))
+            scope = dict(scope, headers=headers, server=("localhost", port))
         await inner_app(scope, receive, send)
 
     uvicorn.run(app, host="0.0.0.0", port=port)
