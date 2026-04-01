@@ -9,6 +9,7 @@ Usage:
 
 import os
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 import yfinance as yf
 import json
 from datetime import datetime, timedelta
@@ -18,7 +19,9 @@ mcp = FastMCP(
     json_response=True,
     host="0.0.0.0",
     port=int(os.environ.get("PORT", 8000)),
-    allowed_origins=["*"],
+    transport_security=TransportSecuritySettings(
+        enable_dns_rebinding_protection=False,
+    ),
 )
 
 
