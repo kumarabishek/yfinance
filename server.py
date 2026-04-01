@@ -16,7 +16,6 @@ from datetime import datetime, timedelta
 mcp = FastMCP(
     "Yahoo Finance",
     json_response=True,
-    stateless_http=True,  # Recommended for remote deployments
 )
 
 
@@ -460,13 +459,6 @@ def search_ticker(query: str) -> dict:
 # ──────────────────────────────────────────────
 if __name__ == "__main__":
     import uvicorn
-    from starlette.middleware import Middleware
-    from starlette.middleware.trustedhost import TrustedHostMiddleware
-
     port = int(os.environ.get("PORT", 8000))
-    app = mcp.streamable_http_app()
-
-    # Allow all hosts (needed for Railway's proxy)
-    app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
-
-    uvicorn.run(app, host="0.0.0.0", port=port, proxy_headers=True, forwarded_allow_ips="*")
+    app = mcp.sse_app()
+    uvicorn.run(app, host="0.0.0.0", port=port)
