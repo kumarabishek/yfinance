@@ -10,7 +10,7 @@ COPY pyproject.toml .
 COPY server.py .
 
 # Install dependencies
-RUN uv sync
+RUN uv sync --no-install-project
 
 # Default port (can be overridden by cloud platform)
 ENV PORT=8000
